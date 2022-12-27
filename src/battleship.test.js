@@ -1,7 +1,7 @@
-import { Ship } from './battleship';
+import { Ship, Gameboard } from './battleship';
 
 // test('Ship factory returns object', () => {
-//     expect(Ship(3)).toEqual({ length: 3, hits: 0, sink: false });
+//     expect(Ship(3)).toEqual({ length: 3, hits: 0, sunk: false });
 // });
 
 test('Ship factory throws if length is not valid', () => {
@@ -27,4 +27,56 @@ test('isSunk function 2', () => {
     const testShip = Ship(2);
     testShip.hit();
     expect(testShip.isSunk()).toBeFalsy();
+});
+
+test('Place ship horizontally on Game board', () => {
+    const testBoard = Gameboard();
+    expect(JSON.stringify(testBoard.placeShip([1, 0], 3))).toStrictEqual(
+        JSON.stringify({
+            coordinates: [
+                [1, 0],
+                [2, 0],
+                [3, 0],
+            ],
+            ship: {
+                length: 3,
+                hits: 0,
+                sunk: false,
+                hit: Ship(3).hit,
+                isSunk: Ship(3).isSunk,
+            },
+        })
+    );
+});
+
+test('Place ship vertically on board', () => {
+    const testBoard = Gameboard();
+    expect(JSON.stringify(testBoard.placeShip([2, 3], 4, false))).toStrictEqual(
+        JSON.stringify({
+            coordinates: [
+                [2, 3],
+                [2, 4],
+                [2, 5],
+                [2, 6],
+            ],
+            ship: {
+                length: 4,
+                hits: 0,
+                sunk: false,
+                hit: Ship(4).hit,
+                isSunk: Ship(4).isSunk,
+            },
+        })
+    );
+});
+
+test('Trying to place a ship outside of the board limits throws an error', () => {
+    const testBoard = Gameboard();
+    expect(() => testBoard.placeShip([9, 0], 3, true)).toThrow();
+});
+
+test('Trying to place a ship on an already occupied coordinate throws error', () => {
+    const testBoard = Gameboard();
+    testBoard.placeShip([3, 4], 3);
+    expect(() => testBoard.placeShip([5, 4], 2, false)).toThrow();
 });
