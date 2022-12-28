@@ -100,5 +100,26 @@ test('Destroy a ship and get its state', () => {
     testBoard.placeShip([0, 0], 2);
     testBoard.receiveAttack([0, 0]);
     testBoard.receiveAttack([1, 0]);
-    expect(testBoard.checkShipState()).toBeTruthy();
+    expect(testBoard.allShipsSunk()).toBeTruthy();
+});
+
+test('Destroy a float and get confirmation', () => {
+    const testBoard = Gameboard();
+    testBoard.placeShip([0, 0], 2);
+    testBoard.placeShip([5, 4], 2, false);
+    testBoard.receiveAttack([0, 0]);
+    testBoard.receiveAttack([1, 0]);
+    testBoard.receiveAttack([5, 4]);
+    testBoard.receiveAttack([5, 5]);
+    expect(testBoard.allShipsSunk()).toBeTruthy();
+});
+
+test('Get negative response when there are ships still floating', () => {
+    const testBoard = Gameboard();
+    testBoard.placeShip([0, 0], 2);
+    testBoard.placeShip([5, 4], 2, false);
+    testBoard.receiveAttack([0, 0]);
+    testBoard.receiveAttack([1, 0]);
+    testBoard.receiveAttack([5, 5]);
+    expect(testBoard.allShipsSunk()).toBeFalsy();
 });

@@ -103,7 +103,6 @@ function Gameboard() {
             throw new Error('Shot already taken at this coordinate');
         }
         let value;
-        // check this loop and decide if the function should remove the coordinate from the ship's coordinates property
         currentShips.forEach((obj) => {
             obj.coordinates.forEach((shipCoordinate) => {
                 if (
@@ -118,14 +117,14 @@ function Gameboard() {
         if (value) return value;
     }
 
-    function checkShipState() {
+    function allShipsSunk() {
         return currentShips.every((ship) => ship.isSunk());
     }
 
     return {
         placeShip,
         receiveAttack,
-        checkShipState,
+        allShipsSunk,
     };
 }
 
