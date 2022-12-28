@@ -16,9 +16,6 @@ function Ship(length) {
     }
 
     return {
-        length,
-        numberOfHits,
-        sunk,
         hit,
         isSunk,
     };
@@ -42,7 +39,7 @@ function Gameboard() {
         }
     }
 
-    function checkAvailability(...coordinates) {
+    function checkAvailabilityForPlacing(...coordinates) {
         coordinates.forEach((element) => {
             if (!availableCoordinates.includes(JSON.stringify(element))) {
                 throw new Error(
@@ -54,9 +51,20 @@ function Gameboard() {
 
     const currentShips = [];
 
+    function checkBoardLimits(coordinate) {
+        if (
+            coordinate[0] > 9 ||
+            coordinate[1] > 9 ||
+            coordinate[0] < 0 ||
+            coordinate[1] < 0
+        ) {
+            throw new Error('Outside of board limits');
+        }
+    }
+
     function placeShip(startingCoordinate, length, isHorizontal = true) {
-        const coordinates = [startingCoordinate];
-        for (let i = 1; i < length; i++) {
+        const coordinates = [];
+        for (let i = 0; i < length; i++) {
             let newCoordinate;
             if (isHorizontal) {
                 newCoordinate = [startingCoordinate[0] + i].concat([
@@ -67,23 +75,22 @@ function Gameboard() {
                     startingCoordinate[1] + i,
                 ]);
             }
-            if (newCoordinate[0] > 9 || newCoordinate[1] > 9) {
-                throw new Error('Outside of board limits');
-            }
+            checkBoardLimits(newCoordinate);
             coordinates.push(newCoordinate);
         }
-        checkAvailability(...coordinates);
+        checkAvailabilityForPlacing(...coordinates);
         const newShip = Ship(length);
-        const obj = { coordinates, ship: newShip };
+        newShip.coordinates = coordinates;
         removeCoordinates(...coordinates);
-        currentShips.push(obj);
-        return obj;
+        currentShips.push(newShip);
+        return newShip;
     }
 
     const missedShots = [];
     const successfulShots = [];
 
     function receiveAttack(coordinates) {
+        checkBoardLimits(coordinates);
         if (availableCoordinates.includes(JSON.stringify(coordinates))) {
             missedShots.push(JSON.stringify(coordinates));
             removeCoordinates(coordinates);
@@ -96,13 +103,14 @@ function Gameboard() {
             throw new Error('Shot already taken at this coordinate');
         }
         let value;
+        // check this loop and decide if the function should remove the coordinate from the ship's coordinates property
         currentShips.forEach((obj) => {
             obj.coordinates.forEach((shipCoordinate) => {
                 if (
                     JSON.stringify(shipCoordinate) ===
                     JSON.stringify(coordinates)
                 ) {
-                    value = obj.ship.hit();
+                    value = obj.hit();
                     successfulShots.push(JSON.stringify(coordinates));
                 }
             });
@@ -110,9 +118,14 @@ function Gameboard() {
         if (value) return value;
     }
 
+    function checkShipState() {
+        return currentShips.every((ship) => ship.isSunk());
+    }
+
     return {
         placeShip,
         receiveAttack,
+        checkShipState,
     };
 }
 

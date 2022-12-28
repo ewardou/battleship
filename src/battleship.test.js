@@ -1,9 +1,5 @@
 import { Ship, Gameboard } from './battleship';
 
-// test('Ship factory returns object', () => {
-//     expect(Ship(3)).toEqual({ length: 3, hits: 0, sunk: false });
-// });
-
 test('Ship factory throws if length is not valid', () => {
     expect(() => Ship()).toThrow();
     expect(() => Ship(0)).toThrow();
@@ -38,13 +34,8 @@ test('Place ship horizontally on Game board', () => {
                 [2, 0],
                 [3, 0],
             ],
-            ship: {
-                length: 3,
-                numberOfHits: 0,
-                sunk: false,
-                hit: Ship(3).hit,
-                isSunk: Ship(3).isSunk,
-            },
+            hit: Ship(3).hit,
+            isSunk: Ship(3).isSunk,
         })
     );
 });
@@ -59,13 +50,8 @@ test('Place ship vertically on board', () => {
                 [2, 5],
                 [2, 6],
             ],
-            ship: {
-                length: 4,
-                numberOfHits: 0,
-                sunk: false,
-                hit: Ship(4).hit,
-                isSunk: Ship(4).isSunk,
-            },
+            hit: Ship(4).hit,
+            isSunk: Ship(4).isSunk,
         })
     );
 });
@@ -73,6 +59,11 @@ test('Place ship vertically on board', () => {
 test('Trying to place a ship outside of the board limits throws an error', () => {
     const testBoard = Gameboard();
     expect(() => testBoard.placeShip([9, 0], 3, true)).toThrow();
+});
+
+test('Trying to place a ship outside of the board limits throws an error 2', () => {
+    const testBoard = Gameboard();
+    expect(() => testBoard.placeShip([-2, 4], 3)).toThrow();
 });
 
 test('Trying to place a ship on an already occupied coordinate throws error', () => {
@@ -102,4 +93,12 @@ test('Trying to hit the same coordinate twice will produce an error', () => {
     testBoard.receiveAttack([4, 3]);
     expect(() => testBoard.receiveAttack([1, 1])).toThrow();
     expect(() => testBoard.receiveAttack([4, 3])).toThrow();
+});
+
+test('Destroy a ship and get its state', () => {
+    const testBoard = Gameboard();
+    testBoard.placeShip([0, 0], 2);
+    testBoard.receiveAttack([0, 0]);
+    testBoard.receiveAttack([1, 0]);
+    expect(testBoard.checkShipState()).toBeTruthy();
 });
