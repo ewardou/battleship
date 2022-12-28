@@ -40,7 +40,7 @@ test('Place ship horizontally on Game board', () => {
             ],
             ship: {
                 length: 3,
-                hits: 0,
+                numberOfHits: 0,
                 sunk: false,
                 hit: Ship(3).hit,
                 isSunk: Ship(3).isSunk,
@@ -61,7 +61,7 @@ test('Place ship vertically on board', () => {
             ],
             ship: {
                 length: 4,
-                hits: 0,
+                numberOfHits: 0,
                 sunk: false,
                 hit: Ship(4).hit,
                 isSunk: Ship(4).isSunk,
@@ -79,4 +79,27 @@ test('Trying to place a ship on an already occupied coordinate throws error', ()
     const testBoard = Gameboard();
     testBoard.placeShip([3, 4], 3);
     expect(() => testBoard.placeShip([5, 4], 2, false)).toThrow();
+});
+
+test('Attack empty coordinate', () => {
+    const testBoard = Gameboard();
+    testBoard.placeShip([0, 2], 2, false);
+    expect(JSON.stringify(testBoard.receiveAttack([2, 3]))).toStrictEqual(
+        JSON.stringify(['[2,3]'])
+    );
+});
+
+test("Attack ship and call ship's hit func", () => {
+    const testBoard = Gameboard();
+    testBoard.placeShip([0, 2], 3);
+    expect(testBoard.receiveAttack([1, 2])).toBe(1);
+});
+
+test('Trying to hit the same coordinate twice will produce an error', () => {
+    const testBoard = Gameboard();
+    testBoard.placeShip([4, 3], 2);
+    testBoard.receiveAttack([1, 1]);
+    testBoard.receiveAttack([4, 3]);
+    expect(() => testBoard.receiveAttack([1, 1])).toThrow();
+    expect(() => testBoard.receiveAttack([4, 3])).toThrow();
 });

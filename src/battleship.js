@@ -3,19 +3,21 @@ function Ship(length) {
         throw new Error('Length must be greater than 0 and less than 6');
     }
     let sunk = false;
-    let hits = 0;
-    function hit() {
-        if (sunk) return 'The ship has already sunk';
-        hits += 1;
-        return hits;
-    }
+    let numberOfHits = 0;
     function isSunk() {
-        sunk = hits >= length;
+        sunk = numberOfHits >= length;
         return sunk;
     }
+    function hit() {
+        if (sunk) return 'The ship has already sunk';
+        numberOfHits += 1;
+        isSunk();
+        return numberOfHits;
+    }
+
     return {
         length,
-        hits,
+        numberOfHits,
         sunk,
         hit,
         isSunk,
@@ -44,11 +46,13 @@ function Gameboard() {
         coordinates.forEach((element) => {
             if (!availableCoordinates.includes(JSON.stringify(element))) {
                 throw new Error(
-                    `Coordinate ${JSON.stringify(element)} is already filled`
+                    `Coordinate ${JSON.stringify(element)} is already occupied`
                 );
             }
         });
     }
+
+    const currentShips = [];
 
     function placeShip(startingCoordinate, length, isHorizontal = true) {
         const coordinates = [startingCoordinate];
@@ -72,11 +76,43 @@ function Gameboard() {
         const newShip = Ship(length);
         const obj = { coordinates, ship: newShip };
         removeCoordinates(...coordinates);
+        currentShips.push(obj);
         return obj;
+    }
+
+    const missedShots = [];
+    const successfulShots = [];
+
+    function receiveAttack(coordinates) {
+        if (availableCoordinates.includes(JSON.stringify(coordinates))) {
+            missedShots.push(JSON.stringify(coordinates));
+            removeCoordinates(coordinates);
+            return missedShots;
+        }
+        if (
+            missedShots.includes(JSON.stringify(coordinates)) ||
+            successfulShots.includes(JSON.stringify(coordinates))
+        ) {
+            throw new Error('Shot already taken at this coordinate');
+        }
+        let value;
+        currentShips.forEach((obj) => {
+            obj.coordinates.forEach((shipCoordinate) => {
+                if (
+                    JSON.stringify(shipCoordinate) ===
+                    JSON.stringify(coordinates)
+                ) {
+                    value = obj.ship.hit();
+                    successfulShots.push(JSON.stringify(coordinates));
+                }
+            });
+        });
+        if (value) return value;
     }
 
     return {
         placeShip,
+        receiveAttack,
     };
 }
 
