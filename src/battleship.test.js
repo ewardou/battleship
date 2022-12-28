@@ -148,8 +148,26 @@ test('Player cannot hit same coordinate twice', () => {
     expect(() => testPlayer.attackEnemy(testPlayer2, [1, 1])).toThrow();
 });
 
-test.only('Computer can make random attacks', () => {
+test('Computer can make random attacks', () => {
     const cpu = Player(true);
     const testPlayer = Player();
     expect(cpu.randomAttack(testPlayer)).toBe('Computer attack');
+});
+
+test('Computer can make 100 attacks without repeating any', () => {
+    const cpu = Player(true);
+    const testPlayer = Player();
+    for (let i = 0; i < 99; i++) {
+        cpu.randomAttack(testPlayer);
+    }
+    expect(cpu.randomAttack(testPlayer)).toBe('Computer attack');
+});
+
+test('Computer cannot make more than 100 random attacks', () => {
+    const cpu = Player(true);
+    const testPlayer = Player();
+    for (let i = 0; i < 100; i++) {
+        cpu.randomAttack(testPlayer);
+    }
+    expect(() => cpu.randomAttack(testPlayer)).toThrow();
 });

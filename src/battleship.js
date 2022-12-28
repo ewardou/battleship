@@ -141,6 +141,9 @@ function Player(isCPU = false) {
     }
 
     function randomAttack(enemy) {
+        if (previousAttacks.length >= 100) {
+            throw new Error('All coordinates have been attacked');
+        }
         let randomCoordinate = generateRandomCoordinate();
         while (previousAttacks.includes(JSON.stringify(randomCoordinate))) {
             randomCoordinate = generateRandomCoordinate();
