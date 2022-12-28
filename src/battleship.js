@@ -128,4 +128,36 @@ function Gameboard() {
     };
 }
 
-export { Ship, Gameboard };
+function Player(isCPU = false) {
+    const gameboard = Gameboard();
+    const previousAttacks = [];
+    function attackEnemy(enemy, coordinate) {
+        enemy.gameboard.receiveAttack(coordinate);
+        previousAttacks.push(JSON.stringify(coordinate));
+        return 'Enemy attacked';
+    }
+    function generateRandomCoordinate() {
+        return [Math.floor(Math.random() * 10), Math.floor(Math.random() * 10)];
+    }
+
+    function randomAttack(enemy) {
+        let randomCoordinate = generateRandomCoordinate();
+        while (previousAttacks.includes(JSON.stringify(randomCoordinate))) {
+            randomCoordinate = generateRandomCoordinate();
+        }
+        attackEnemy(enemy, randomCoordinate);
+        return 'Computer attack';
+    }
+    if (isCPU) {
+        return {
+            gameboard,
+            randomAttack,
+        };
+    }
+    return {
+        gameboard,
+        attackEnemy,
+    };
+}
+
+export { Ship, Gameboard, Player };

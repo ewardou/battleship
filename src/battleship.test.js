@@ -1,4 +1,4 @@
-import { Ship, Gameboard } from './battleship';
+import { Ship, Gameboard, Player } from './battleship';
 
 test('Ship factory throws if length is not valid', () => {
     expect(() => Ship()).toThrow();
@@ -122,4 +122,34 @@ test('Get negative response when there are ships still floating', () => {
     testBoard.receiveAttack([1, 0]);
     testBoard.receiveAttack([5, 5]);
     expect(testBoard.allShipsSunk()).toBeFalsy();
+});
+
+test('Every player has its own game board', () => {
+    const testPlayer = Player();
+    const testPlayer2 = Player();
+    expect(JSON.stringify(testPlayer)).toStrictEqual(
+        JSON.stringify({ gameboard: Gameboard() })
+    );
+    expect(JSON.stringify(testPlayer2)).toStrictEqual(
+        JSON.stringify({ gameboard: Gameboard() })
+    );
+});
+
+test('Player 1 attacks player 2', () => {
+    const testPlayer = Player();
+    const testPlayer2 = Player();
+    expect(testPlayer.attackEnemy(testPlayer2, [1, 1])).toBe('Enemy attacked');
+});
+
+test('Player cannot hit same coordinate twice', () => {
+    const testPlayer = Player();
+    const testPlayer2 = Player();
+    testPlayer.attackEnemy(testPlayer2, [1, 1]);
+    expect(() => testPlayer.attackEnemy(testPlayer2, [1, 1])).toThrow();
+});
+
+test.only('Computer can make random attacks', () => {
+    const cpu = Player(true);
+    const testPlayer = Player();
+    expect(cpu.randomAttack(testPlayer)).toBe('Computer attack');
 });
