@@ -1,4 +1,5 @@
 import { Ship, Gameboard, Player } from './battleship';
+import { gameLoop } from './game';
 
 test('Ship factory throws if length is not valid', () => {
     expect(() => Ship()).toThrow();
@@ -170,4 +171,13 @@ test('Computer cannot make more than 100 random attacks', () => {
         cpu.randomAttack(testPlayer);
     }
     expect(() => cpu.randomAttack(testPlayer)).toThrow();
+});
+
+test.only('Game loop returns the winner', () => {
+    const player1 = Player();
+    const cpu = Player(true);
+    player1.gameboard.placeShip([3, 0], 3, false);
+    cpu.gameboard.placeShip([0, 7], 2, true);
+    gameLoop(player1, cpu, [0, 7]);
+    expect(gameLoop(player1, cpu, [1, 7])).toBe('CPU lost');
 });
