@@ -121,10 +121,19 @@ function Gameboard() {
         return currentShips.every((ship) => ship.isSunk());
     }
 
+    function getBoardInformation() {
+        return {
+            currentShips,
+            missedShots,
+            successfulShots,
+        };
+    }
+
     return {
         placeShip,
         receiveAttack,
         allShipsSunk,
+        getBoardInformation,
     };
 }
 

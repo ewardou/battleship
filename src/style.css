@@ -1,0 +1,25 @@
+body > div {
+    --size: 400px;
+    width: var(--size);
+    border: solid black 1px;
+    height: var(--size);
+    display: grid;
+    grid-template-columns: repeat(10, 1fr);
+    grid-template-rows: repeat(10, 1fr);
+}
+
+body > div > div {
+    border-right: solid black 1px;
+    border-bottom: solid black 1px;
+}
+
+.ship {
+    background-color: blue;
+    border: none;
+}
+.miss {
+    background-color: red;
+}
+.success {
+    background-color: green;
+}

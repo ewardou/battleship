@@ -1,4 +1,6 @@
 import { Player } from './battleship';
+import './style.css';
+import { createBoard, renderGameboard } from './dom';
 
 const player1 = Player();
 const cpu = Player(true);
@@ -12,6 +14,8 @@ player1.gameboard.placeShip([4, 9], 5, true);
 cpu.gameboard.placeShip([0, 7], 3, true);
 cpu.gameboard.placeShip([0, 2], 4, false);
 cpu.gameboard.placeShip([9, 2], 3, false);
+cpu.randomAttack(player1);
+cpu.randomAttack(player1);
 
 function gameLoop(player, computer, coordinate) {
     player.attackEnemy(computer, coordinate);
@@ -24,6 +28,8 @@ function gameLoop(player, computer, coordinate) {
     }
 }
 
-// double loop, less than 10, create new div and assign class or data index with given values from loops, append to container board
+const board = createBoard();
+document.body.appendChild(board);
+renderGameboard(player1.gameboard);
 
 export { gameLoop };
