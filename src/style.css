@@ -1,16 +1,46 @@
+@import url('https://fonts.googleapis.com/css2?family=Bungee+Shade&display=swap');
+
+h1 {
+    font-family: 'Bungee Shade', cursive;
+    font-size: 3.5rem;
+    grid-column: 1/3;
+    justify-self: center;
+    margin-bottom: 0;
+}
+
 body > div {
-    --size: 400px;
+    --size: 350px;
     width: var(--size);
-    border: solid black 1px;
+    border-top: solid black 1px;
+    border-left: solid black 1px;
+    outline: 2px solid black;
     height: var(--size);
     display: grid;
     grid-template-columns: repeat(10, 1fr);
     grid-template-rows: repeat(10, 1fr);
 }
+body > div:first-of-type {
+    justify-self: end;
+}
+
+body {
+    background-color: aquamarine;
+    display: grid;
+    gap: 50px;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: min-content 1fr;
+    justify-items: start;
+    align-items: center;
+}
 
 body > div > div {
     border-right: solid black 1px;
+    background-color: white;
     border-bottom: solid black 1px;
+}
+
+.available:hover {
+    box-shadow: inset rgb(63, 50, 248) 0px 0px 5px 2px;
 }
 
 .ship {
@@ -18,8 +48,44 @@ body > div > div {
     border: none;
 }
 .miss {
-    background-color: red;
+    background-color: rgb(245, 245, 120);
+    text-align: center;
+}
+.miss::after {
+    position: relative;
+    content: '';
+    display: block;
+    height: 12%;
+    width: 12%;
+    border-radius: 50%;
+    background: black;
+    left: 0;
+    right: 0;
+    top: 40%;
+    bottom: 0;
+    margin: auto;
+}
+.success::before,
+.success::after {
+    position: relative;
+    content: '';
+    background: rgba(0, 0, 0, 0.6);
+    display: inline-block;
+    width: 5%;
+    height: 155%;
+    transform: rotate(-45deg);
+    left: 0;
+    right: 0;
+    top: -10px;
+    bottom: 0;
+    margin: auto;
+}
+
+.success::after {
+    transform: rotate(45deg);
 }
 .success {
-    background-color: green;
+    background-color: red;
+    overflow: hidden;
+    text-align: center;
 }

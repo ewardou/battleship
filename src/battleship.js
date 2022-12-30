@@ -137,7 +137,7 @@ function Gameboard() {
     };
 }
 
-function Player(isCPU = false) {
+function Player(name, isCPU = false) {
     const gameboard = Gameboard();
     const previousAttacks = [];
     function attackEnemy(enemy, coordinate) {
@@ -162,11 +162,13 @@ function Player(isCPU = false) {
     }
     if (isCPU) {
         return {
+            name,
             gameboard,
             randomAttack,
         };
     }
     return {
+        name,
         gameboard,
         attackEnemy,
     };
