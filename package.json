@@ -4,7 +4,7 @@
     "description": "",
     "main": "index.js",
     "scripts": {
-        "test": "jest",
+        "test": "jest --config jest.config.js",
         "watch": "webpack --watch"
     },
     "repository": {
@@ -19,6 +19,8 @@
     "homepage": "https://github.com/ewardou/battleship#readme",
     "devDependencies": {
         "@babel/preset-env": "^7.20.2",
+        "babel-core": "^7.0.0-bridge.0",
+        "babel-jest": "^29.3.1",
         "css-loader": "^6.7.3",
         "eslint": "^8.30.0",
         "eslint-config-airbnb-base": "^15.0.0",

@@ -4,19 +4,18 @@ import { createBoard, renderGameboard } from './dom';
 
 const player1 = Player('player1');
 const cpu = Player('cpu', true);
+const para = document.createElement('p');
 
 player1.gameboard.placeShip([0, 0], 2, true);
 player1.gameboard.placeShip([3, 0], 3, false);
 player1.gameboard.placeShip([6, 6], 2, false);
 player1.gameboard.placeShip([6, 0], 4, true);
 player1.gameboard.placeShip([4, 9], 5, true);
-player1.attackEnemy(cpu, [0, 0]);
 
 cpu.gameboard.placeShip([0, 7], 3, true);
 cpu.gameboard.placeShip([0, 2], 4, false);
 cpu.gameboard.placeShip([9, 2], 3, false);
-cpu.randomAttack(player1);
-cpu.randomAttack(player1);
+para.textContent = `Ships left: ${cpu.shipsLeft()}`;
 
 function gameLoop(player, computer, coordinate) {
     if (computer.gameboard.allShipsSunk() || player.gameboard.allShipsSunk()) {
@@ -24,16 +23,18 @@ function gameLoop(player, computer, coordinate) {
     }
     player.attackEnemy(computer, coordinate);
     renderGameboard(cpu);
+    para.textContent = `Ships left: ${cpu.shipsLeft()}`;
     if (computer.gameboard.allShipsSunk()) {
         return 'CPU lost';
     }
-    computer.randomAttack(player);
+    computer.computerAttack(player);
     renderGameboard(player1);
     if (player.gameboard.allShipsSunk()) {
         return 'Player 1 lost';
     }
 }
 const cpuBoard = createBoard(cpu);
+cpuBoard.append(para);
 const board = createBoard(player1);
 document.body.append(board, cpuBoard);
 renderGameboard(player1);
@@ -49,20 +50,5 @@ cells.forEach((cell) => {
         cell.classList.remove('available');
     });
 });
-
-function shipsLeft(player) {
-    const { currentShips } = player.gameboard.getBoardInformation();
-    let count = 0;
-    for (let i = 0; i < currentShips.length; i++) {
-        if (currentShips[i].isSunk()) {
-            count += 1;
-        }
-    }
-    return currentShips.length - count;
-}
-
-const para = document.createElement('para');
-para.textContent = `${shipsLeft(cpu)}`;
-document.body.append(para);
 
 export { gameLoop };

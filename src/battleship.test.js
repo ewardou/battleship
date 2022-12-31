@@ -1,5 +1,5 @@
 import { Ship, Gameboard, Player } from './battleship';
-import { gameLoop } from './game';
+import { gameLoop, shipsLeft } from './game';
 
 test('Ship factory throws if length is not valid', () => {
     expect(() => Ship()).toThrow();
@@ -180,4 +180,13 @@ test.only('Game loop returns the winner', () => {
     cpu.gameboard.placeShip([0, 7], 2, true);
     gameLoop(player1, cpu, [0, 7]);
     expect(gameLoop(player1, cpu, [1, 7])).toBe('CPU lost');
+});
+
+test('Get the number of ships left', () => {
+    const player1 = Player('player1');
+
+    player1.gameboard.placeShip([0, 0], 2, true);
+    player1.gameboard.placeShip([3, 0], 3, false);
+    player1.gameboard.placeShip([6, 6], 2, false);
+    expect(shipsLeft(player1)).toEqual(3);
 });

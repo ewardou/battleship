@@ -149,28 +149,85 @@ function Player(name, isCPU = false) {
         return [Math.floor(Math.random() * 10), Math.floor(Math.random() * 10)];
     }
 
-    function randomAttack(enemy) {
-        if (previousAttacks.length >= 100) {
-            throw new Error('All coordinates have been attacked');
+    let lastHit;
+    function computerAttack(enemy) {
+        function getAdjacentOptions(cell) {
+            let array = [];
+            if (cell[0] >= 0 && cell[0] < 9) {
+                array.push([cell[0] + 1, cell[1]]);
+            }
+            if (cell[0] <= 9 && cell[0] > 0) {
+                array.push([cell[0] - 1, cell[1]]);
+            }
+            if (cell[1] >= 0 && cell[1] < 9) {
+                array.push([cell[0], cell[1] + 1]);
+            }
+            if (cell[1] <= 9 && cell[1] > 0) {
+                array.push([cell[0], cell[1] - 1]);
+            }
+            array = array.filter(
+                (pair) => !previousAttacks.includes(JSON.stringify(pair))
+            );
+            return array;
         }
-        let randomCoordinate = generateRandomCoordinate();
-        while (previousAttacks.includes(JSON.stringify(randomCoordinate))) {
-            randomCoordinate = generateRandomCoordinate();
+
+        function getAdjacentCell(cell) {
+            const array = getAdjacentOptions(cell);
+            const option = Math.floor(Math.random() * array.length);
+            return array[option];
         }
-        attackEnemy(enemy, randomCoordinate);
-        return 'Computer attack';
+
+        function attackAdjacentCell() {
+            let newCoordinate;
+            if (lastHit) {
+                newCoordinate = getAdjacentCell(lastHit);
+            }
+            if (newCoordinate === [] || !newCoordinate) {
+                lastHit = null;
+                newCoordinate = generateRandomCoordinate();
+                while (
+                    previousAttacks.includes(JSON.stringify(newCoordinate))
+                ) {
+                    newCoordinate = generateRandomCoordinate();
+                }
+            }
+            attackEnemy(enemy, newCoordinate);
+            if (
+                enemy.gameboard
+                    .getBoardInformation()
+                    .successfulShots.includes(JSON.stringify(newCoordinate))
+            ) {
+                lastHit = newCoordinate;
+            }
+            return 'Computer attack';
+        }
+        return attackAdjacentCell();
     }
+
+    function shipsLeft() {
+        const { currentShips } = gameboard.getBoardInformation();
+        let count = 0;
+        for (let i = 0; i < currentShips.length; i++) {
+            if (currentShips[i].isSunk()) {
+                count += 1;
+            }
+        }
+        return currentShips.length - count;
+    }
+
     if (isCPU) {
         return {
             name,
             gameboard,
-            randomAttack,
+            computerAttack,
+            shipsLeft,
         };
     }
     return {
         name,
         gameboard,
         attackEnemy,
+        shipsLeft,
     };
 }
 

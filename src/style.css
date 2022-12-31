@@ -16,8 +16,17 @@ body > div {
     outline: 2px solid black;
     height: var(--size);
     display: grid;
+    position: relative;
     grid-template-columns: repeat(10, 1fr);
     grid-template-rows: repeat(10, 1fr);
+}
+p {
+    position: absolute;
+    margin: 0;
+    bottom: -30px;
+    right: 0;
+    font-weight: bold;
+    font-family: sans-serif;
 }
 body > div:first-of-type {
     justify-self: end;
