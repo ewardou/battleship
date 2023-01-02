@@ -7,6 +7,7 @@ const cpu = Player('cpu', true);
 cpu.placeShipRandomly();
 const para = document.createElement('p');
 para.textContent = `Ships left: ${cpu.shipsLeft()}`;
+const message = document.querySelector('header>p');
 
 function gameLoop(player, computer, coordinate) {
     if (computer.gameboard.allShipsSunk() || player.gameboard.allShipsSunk()) {
@@ -16,35 +17,40 @@ function gameLoop(player, computer, coordinate) {
     renderGameboard(cpu);
     para.textContent = `Ships left: ${cpu.shipsLeft()}`;
     if (computer.gameboard.allShipsSunk()) {
-        return 'CPU lost';
+        message.textContent = 'Player won';
     }
     computer.computerAttack(player);
     renderGameboard(player1);
     if (player.gameboard.allShipsSunk()) {
-        return 'Player 1 lost';
+        message.textContent = 'Cpu won';
     }
 }
-const cpuBoard = createBoard(cpu);
-cpuBoard.append(para);
 const board = createBoard(player1);
-document.body.append(board, cpuBoard);
+document.body.append(board);
 renderGameboard(player1);
-renderGameboard(cpu);
 
-const cpuCells = document.querySelectorAll('.cpu>div[data-coordinate]');
-cpuCells.forEach((cell) => {
-    cell.addEventListener('click', (event) => {
-        const coordinate = JSON.parse(
-            event.target.getAttribute('data-coordinate')
-        );
-        gameLoop(player1, cpu, coordinate);
-        cell.classList.remove('available');
+function addCPUCellsListener() {
+    const cpuCells = document.querySelectorAll('.cpu>div[data-coordinate]');
+    cpuCells.forEach((cell) => {
+        cell.addEventListener('click', (event) => {
+            const coordinate = JSON.parse(
+                event.target.getAttribute('data-coordinate')
+            );
+            gameLoop(player1, cpu, coordinate);
+            cell.classList.remove('available');
+        });
     });
-});
+}
 
 function removeShipsDiv() {
     if (player1.shipsLeft() >= 5) {
         document.querySelector('.ships-container').remove();
+        const cpuBoard = createBoard(cpu);
+        cpuBoard.append(para);
+        message.textContent = '';
+        document.body.append(cpuBoard);
+        renderGameboard(cpu);
+        addCPUCellsListener();
     }
 }
 const playerCells = document.querySelectorAll('.player1>div[data-coordinate]');

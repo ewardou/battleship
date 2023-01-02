@@ -28,7 +28,7 @@ function renderGameboard(player) {
         );
         cell.classList.add('success');
     });
-    if (player.name === 'cpu' || player.name === 'player1') {
+    if (player.name !== 'cpu') {
         board.currentShips.forEach((ship) => {
             ship.coordinates.forEach((pair) => {
                 const cell = document.querySelector(
