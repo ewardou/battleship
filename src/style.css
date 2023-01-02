@@ -99,13 +99,28 @@ body > div > div {
     text-align: center;
 }
 
-.test {
+.ship {
     background-color: blue;
-    width: 105px;
-    height: 35px;
     border: none;
     outline: none;
 }
 .hide {
     display: none;
+    transform: rotate(90deg);
+}
+
+.ships-container {
+    background-color: white;
+    outline: 2px black solid;
+    display: grid;
+    gap: 15px;
+    width: fit-content;
+    height: auto;
+    padding: 15px;
+    box-sizing: border-box;
+    grid-template-columns: min-content min-content min-content;
+    grid-template-rows: min-content min-content min-content;
+}
+.ships-container button {
+    grid-column: 1/4;
 }
