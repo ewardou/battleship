@@ -1,3 +1,5 @@
+import reset from './reset.svg';
+
 function createBoard(player) {
     const container = document.createElement('div');
     for (let i = 0; i < 10; i++) {
@@ -97,4 +99,15 @@ function createShipDivs() {
     return container;
 }
 
-export { createBoard, renderGameboard, createShipDivs };
+function createRestartButton() {
+    const button = document.createElement('button');
+    const img = document.createElement('img');
+    img.setAttribute('src', reset);
+    button.append(img);
+    button.addEventListener('click', () => {
+        location.reload();
+    });
+    return button;
+}
+
+export { createBoard, renderGameboard, createShipDivs, createRestartButton };

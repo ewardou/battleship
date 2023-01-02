@@ -1,6 +1,11 @@
 import { Player } from './battleship';
 import './style.css';
-import { createBoard, renderGameboard, createShipDivs } from './dom';
+import {
+    createBoard,
+    renderGameboard,
+    createShipDivs,
+    createRestartButton,
+} from './dom';
 
 const player1 = Player('player1');
 const cpu = Player('cpu', true);
@@ -18,11 +23,13 @@ function gameLoop(player, computer, coordinate) {
     para.textContent = `Ships left: ${cpu.shipsLeft()}`;
     if (computer.gameboard.allShipsSunk()) {
         message.textContent = 'Player won';
+        document.body.appendChild(createRestartButton());
     }
     computer.computerAttack(player);
     renderGameboard(player1);
     if (player.gameboard.allShipsSunk()) {
         message.textContent = 'Cpu won';
+        document.body.appendChild(createRestartButton());
     }
 }
 const board = createBoard(player1);
