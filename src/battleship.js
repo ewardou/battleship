@@ -199,6 +199,28 @@ function Player(name, isCPU = false) {
         return [Math.floor(Math.random() * 10), Math.floor(Math.random() * 10)];
     }
 
+    function placeShipRandomly() {
+        try {
+            if (gameboard.getBoardInformation().currentShips.length >= 5) {
+                return;
+            }
+            const randomCoordinate = generateRandomCoordinate();
+            let randomLength = Math.floor(Math.random() * 6);
+            while (randomLength < 2) {
+                randomLength = Math.floor(Math.random() * 6);
+            }
+            const randomDirection = Math.floor(Math.random() * 2) === 0;
+            gameboard.placeShip(
+                randomCoordinate,
+                randomLength,
+                randomDirection
+            );
+            placeShipRandomly();
+        } catch {
+            placeShipRandomly();
+        }
+    }
+
     let previousLastHit = null;
     let lastHit;
     function computerAttack(enemy) {
@@ -256,6 +278,7 @@ function Player(name, isCPU = false) {
             gameboard,
             computerAttack,
             shipsLeft,
+            placeShipRandomly,
         };
     }
     return {

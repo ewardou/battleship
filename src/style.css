@@ -93,17 +93,19 @@ body > div > div {
 .success::after {
     transform: rotate(45deg);
 }
-.success {
-    background-color: red;
-    overflow: hidden;
-    text-align: center;
-}
 
 .ship {
     background-color: blue;
     border: none;
     outline: none;
 }
+
+.success {
+    background-color: red;
+    overflow: hidden;
+    text-align: center;
+}
+
 .hide {
     display: none;
     transform: rotate(90deg);
