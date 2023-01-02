@@ -28,6 +28,7 @@ function Gameboard() {
             availableCoordinates.push(JSON.stringify([i, j]));
         }
     }
+    const shipSurroundCoordinates = [];
 
     function removeCoordinates(...coordinates) {
         while (coordinates.length !== 0) {
@@ -41,7 +42,10 @@ function Gameboard() {
 
     function checkAvailabilityForPlacing(...coordinates) {
         coordinates.forEach((element) => {
-            if (!availableCoordinates.includes(JSON.stringify(element))) {
+            if (
+                !availableCoordinates.includes(JSON.stringify(element)) ||
+                shipSurroundCoordinates.includes(JSON.stringify(element))
+            ) {
                 throw new Error(
                     `Coordinate ${JSON.stringify(element)} is already occupied`
                 );
@@ -60,6 +64,41 @@ function Gameboard() {
         ) {
             throw new Error('Outside of board limits');
         }
+    }
+    function getAdjacentCoordinates(cell, recordArray, diagonals = false) {
+        let array = [];
+        if (cell[0] >= 0 && cell[0] < 9) {
+            array.push([cell[0] + 1, cell[1]]);
+        }
+        if (cell[0] <= 9 && cell[0] > 0) {
+            array.push([cell[0] - 1, cell[1]]);
+        }
+        if (cell[1] >= 0 && cell[1] < 9) {
+            array.push([cell[0], cell[1] + 1]);
+        }
+        if (cell[1] <= 9 && cell[1] > 0) {
+            array.push([cell[0], cell[1] - 1]);
+        }
+
+        if (diagonals) {
+            if (cell[0] <= 9 && cell[0] > 0 && cell[1] <= 9 && cell[1] > 0) {
+                array.push([cell[0] - 1, cell[1] - 1]);
+            }
+            if (cell[0] <= 9 && cell[0] > 0 && cell[1] >= 0 && cell[1] < 9) {
+                array.push([cell[0] - 1, cell[1] + 1]);
+            }
+            if (cell[0] >= 0 && cell[0] < 9 && cell[1] <= 9 && cell[1] > 0) {
+                array.push([cell[0] + 1, cell[1] - 1]);
+            }
+            if (cell[0] >= 0 && cell[0] < 9 && cell[1] >= 0 && cell[1] < 9) {
+                array.push([cell[0] + 1, cell[1] + 1]);
+            }
+        }
+
+        array = array.filter(
+            (pair) => !recordArray.includes(JSON.stringify(pair))
+        );
+        return array;
     }
 
     function placeShip(startingCoordinate, length, isHorizontal = true) {
@@ -82,6 +121,16 @@ function Gameboard() {
         const newShip = Ship(length);
         newShip.coordinates = coordinates;
         removeCoordinates(...coordinates);
+        coordinates.forEach((pair) => {
+            const surrounding = getAdjacentCoordinates(
+                pair,
+                shipSurroundCoordinates,
+                true
+            );
+            surrounding.forEach((sub) => {
+                shipSurroundCoordinates.push(JSON.stringify(sub));
+            });
+        });
         currentShips.push(newShip);
         return newShip;
     }
@@ -134,6 +183,7 @@ function Gameboard() {
         receiveAttack,
         allShipsSunk,
         getBoardInformation,
+        getAdjacentCoordinates,
     };
 }
 
@@ -149,30 +199,14 @@ function Player(name, isCPU = false) {
         return [Math.floor(Math.random() * 10), Math.floor(Math.random() * 10)];
     }
 
+    let previousLastHit = null;
     let lastHit;
     function computerAttack(enemy) {
-        function getAdjacentOptions(cell) {
-            let array = [];
-            if (cell[0] >= 0 && cell[0] < 9) {
-                array.push([cell[0] + 1, cell[1]]);
-            }
-            if (cell[0] <= 9 && cell[0] > 0) {
-                array.push([cell[0] - 1, cell[1]]);
-            }
-            if (cell[1] >= 0 && cell[1] < 9) {
-                array.push([cell[0], cell[1] + 1]);
-            }
-            if (cell[1] <= 9 && cell[1] > 0) {
-                array.push([cell[0], cell[1] - 1]);
-            }
-            array = array.filter(
-                (pair) => !previousAttacks.includes(JSON.stringify(pair))
-            );
-            return array;
-        }
-
         function getAdjacentCell(cell) {
-            const array = getAdjacentOptions(cell);
+            const array = gameboard.getAdjacentCoordinates(
+                cell,
+                previousAttacks
+            );
             const option = Math.floor(Math.random() * array.length);
             return array[option];
         }
@@ -183,7 +217,7 @@ function Player(name, isCPU = false) {
                 newCoordinate = getAdjacentCell(lastHit);
             }
             if (newCoordinate === [] || !newCoordinate) {
-                lastHit = null;
+                lastHit = previousLastHit;
                 newCoordinate = generateRandomCoordinate();
                 while (
                     previousAttacks.includes(JSON.stringify(newCoordinate))
@@ -197,6 +231,7 @@ function Player(name, isCPU = false) {
                     .getBoardInformation()
                     .successfulShots.includes(JSON.stringify(newCoordinate))
             ) {
+                previousLastHit = lastHit;
                 lastHit = newCoordinate;
             }
             return 'Computer attack';

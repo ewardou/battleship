@@ -98,3 +98,14 @@ body > div > div {
     overflow: hidden;
     text-align: center;
 }
+
+.test {
+    background-color: blue;
+    width: 105px;
+    height: 35px;
+    border: none;
+    outline: none;
+}
+.hide {
+    display: none;
+}

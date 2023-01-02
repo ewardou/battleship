@@ -1,3 +1,5 @@
+import { Player } from './battleship';
+
 function createBoard(player) {
     const container = document.createElement('div');
     for (let i = 0; i < 10; i++) {
