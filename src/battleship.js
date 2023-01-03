@@ -286,6 +286,7 @@ function Player(name, isCPU = false) {
         gameboard,
         attackEnemy,
         shipsLeft,
+        placeShipRandomly,
     };
 }
 

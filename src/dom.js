@@ -73,13 +73,20 @@ function dragEnd() {
     this.classList.remove('hide');
 }
 
-function createShipDivs() {
+function createShipDivs(player, fn) {
     const container = document.createElement('div');
     container.classList.add('ships-container');
     const rotateButton = document.createElement('button');
     rotateButton.textContent = 'Rotate';
     rotateButton.addEventListener('click', rotate);
-    container.append(rotateButton);
+    const placeRandomlyButton = document.createElement('button');
+    placeRandomlyButton.textContent = 'Place ships randomly';
+    placeRandomlyButton.addEventListener('click', () => {
+        player.placeShipRandomly();
+        renderGameboard(player);
+        fn();
+    });
+    container.append(rotateButton, placeRandomlyButton);
     const shipDivs = [];
     for (let i = 1; i <= 5; i++) {
         const div = document.createElement('div');

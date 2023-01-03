@@ -79,6 +79,6 @@ playerCells.forEach((cell) => {
     cell.addEventListener('drop', drop);
 });
 
-document.body.append(createShipDivs());
+document.body.append(createShipDivs(player1, removeShipsDiv));
 
 export { gameLoop };
