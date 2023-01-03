@@ -9,10 +9,15 @@ import {
 
 const player1 = Player('player1');
 const cpu = Player('cpu', true);
-cpu.placeShipRandomly();
+const message = document.querySelector('header>p');
 const para = document.createElement('p');
 para.textContent = `Ships left: ${cpu.shipsLeft()}`;
-const message = document.querySelector('header>p');
+
+cpu.placeShipRandomly();
+
+const board = createBoard(player1);
+document.body.append(board);
+renderGameboard(player1);
 
 function gameLoop(player, computer, coordinate) {
     if (computer.gameboard.allShipsSunk() || player.gameboard.allShipsSunk()) {
@@ -28,13 +33,10 @@ function gameLoop(player, computer, coordinate) {
     computer.computerAttack(player);
     renderGameboard(player1);
     if (player.gameboard.allShipsSunk()) {
-        message.textContent = 'Cpu won';
+        message.textContent = 'CPU won';
         document.body.appendChild(createRestartButton());
     }
 }
-const board = createBoard(player1);
-document.body.append(board);
-renderGameboard(player1);
 
 function addCPUCellsListener() {
     const cpuCells = document.querySelectorAll('.cpu>div[data-coordinate]');
@@ -60,6 +62,8 @@ function removeShipsDiv() {
         addCPUCellsListener();
     }
 }
+document.body.append(createShipDivs(player1, removeShipsDiv));
+
 const playerCells = document.querySelectorAll('.player1>div[data-coordinate]');
 const dragOver = function (e) {
     e.preventDefault();
@@ -78,7 +82,5 @@ playerCells.forEach((cell) => {
     cell.addEventListener('dragover', dragOver);
     cell.addEventListener('drop', drop);
 });
-
-document.body.append(createShipDivs(player1, removeShipsDiv));
 
 export { gameLoop };

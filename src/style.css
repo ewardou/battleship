@@ -28,6 +28,7 @@ body > div {
     height: var(--size);
     display: grid;
     position: relative;
+    align-self: flex-start;
     grid-template-columns: repeat(10, 1fr);
     grid-template-rows: repeat(10, 1fr);
 }
@@ -130,7 +131,7 @@ body > div > div {
     display: grid;
     gap: 15px;
     width: fit-content;
-    height: auto;
+    height: fit-content;
     padding: 15px;
     box-sizing: border-box;
     grid-template-columns: min-content min-content min-content;
